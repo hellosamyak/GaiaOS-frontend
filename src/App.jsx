@@ -221,8 +221,8 @@ export default function App() {
       </main>
 
       <footer className="p-4 text-center text-gray-500 text-sm bg-gray-900 border-t border-gray-700">
-        <p>&copy; 2024 GaiaOS. All Rights Reserved.</p>
-        <p className="mt-1">Powered by Your Awesome Team</p>
+        <p>&copy; {new Date().getFullYear()} GaiaOS. All Rights Reserved.</p>
+        <p className="mt-1">Powered by Team Krishna</p>
       </footer>
     </div>
   );
