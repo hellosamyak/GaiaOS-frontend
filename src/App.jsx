@@ -12,7 +12,6 @@ import {
 } from "recharts";
 
 // --- API Configuration ---
-// Fixed environment variable access for Vite
 const BASE_URL =
   import.meta.env?.VITE_API_URL || "https://gaiaos-backend.onrender.com";
 
@@ -131,21 +130,27 @@ export default function App() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white focus:outline-none relative w-8 h-8"
+              className="relative w-10 h-10 text-white focus:outline-none focus:ring-2 focus:ring-green-400 rounded-md transition-all duration-300 hover:scale-110"
+              aria-label={
+                isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+              }
             >
+              <span className="sr-only">
+                {isMenuOpen ? "Close menu" : "Open menu"}
+              </span>
               <span
-                className={`block w-6 h-0.5 bg-white rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isMenuOpen ? "rotate-45" : "-translate-y-2"
+                className={`block w-8 h-0.75 bg-gradient-to-r from-green-400 to-blue-500 rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 transition-all duration-500 ease-in-out ${
+                  isMenuOpen ? "rotate-45 translate-y-0" : "-translate-y-2.5"
                 }`}
               ></span>
               <span
-                className={`block w-6 h-0.5 bg-white rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isMenuOpen ? "opacity-0" : ""
+                className={`block w-8 h-0.75 bg-gradient-to-r from-green-400 to-blue-500 rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 transition-all duration-500 ease-in-out ${
+                  isMenuOpen ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
                 }`}
               ></span>
               <span
-                className={`block w-6 h-0.5 bg-white rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isMenuOpen ? "-rotate-45" : "translate-y-2"
+                className={`block w-8 h-0.75 bg-gradient-to-r from-green-400 to-blue-500 rounded-full absolute left-1/2 top-1/2 transform -translate-x-1/2 transition-all duration-500 ease-in-out ${
+                  isMenuOpen ? "-rotate-45 translate-y-0" : "translate-y-2.5"
                 }`}
               ></span>
             </button>
@@ -1031,7 +1036,7 @@ function BlockchainView({ data }) {
     <div className="container mx-auto p-4 animate-fadeIn">
       <div className="bg-gray-900 p-6 rounded-3xl shadow-lg border border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <h2 className="text-3xl font-bold mb-6 text-pink-400">
-          Blockchain & Gamification
+          Blockchain Grid
         </h2>
 
         <div className="bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-700 mb-8 transition-all duration-300 hover:shadow-lg hover:scale-[1.01]">
