@@ -787,7 +787,7 @@ function ArLensView({ data }) {
       {
         name: "Air Conditioner",
         photoUrl:
-          "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400",
+          "https://images.unsplash.com/photo-1718203862467-c33159fdc504?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWlyJTIwY29uZGl0aW9uZXJ8ZW58MHx8MHx8fDA%3D",
         costPerDay: "₹45",
         kwhPerDay: "4.5 kWh",
         co2PerDay: "2.1 kg",
@@ -795,7 +795,7 @@ function ArLensView({ data }) {
       {
         name: "Refrigerator",
         photoUrl:
-          "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400",
+          "https://images.unsplash.com/photo-1721613877687-c9099b698faa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         costPerDay: "₹15",
         kwhPerDay: "1.5 kWh",
         co2PerDay: "0.7 kg",
@@ -803,7 +803,7 @@ function ArLensView({ data }) {
       {
         name: "Washing Machine",
         photoUrl:
-          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+          "https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         costPerDay: "₹8",
         kwhPerDay: "0.8 kWh",
         co2PerDay: "0.4 kg",
