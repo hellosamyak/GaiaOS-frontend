@@ -11,10 +11,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// All components are defined within this single file for a self-contained hackathon demo.
-
 // --- API Configuration ---
-const BASE_URL = "https://gaiaos-backend.onrender.com";
+// Fixed environment variable access for Vite
+const BASE_URL =
+  import.meta.env?.VITE_API_URL || "https://gaiaos-backend.onrender.com";
 
 // --- Main App Component ---
 export default function App() {
@@ -174,38 +174,36 @@ export default function App() {
         </nav>
       </header>
 
-      {/* Hamburger Menu Overlay */}
-      <div
-        className={`fixed inset-0 z-50 bg-gray-900 bg-opacity-95 backdrop-blur-sm transform transition-transform duration-300 ease-in-out md:hidden ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex justify-end p-4">
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            className="text-white text-4xl"
-          >
-            &times;
-          </button>
+      {/* Fixed Mobile Menu - No transitions, pure CSS */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 backdrop-blur-sm md:hidden">
+          <div className="flex justify-end p-4">
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="text-white text-4xl"
+            >
+              &times;
+            </button>
+          </div>
+          <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
+            {["wallet", "copilot", "arLens", "blockchain"].map((view) => (
+              <li key={view}>
+                <button
+                  onClick={() => {
+                    setActiveView(view);
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-gray-300 hover:text-white transition-colors duration-300"
+                >
+                  {view === "arLens"
+                    ? "AR Lens"
+                    : view.charAt(0).toUpperCase() + view.slice(1)}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
-          {["wallet", "copilot", "arLens", "blockchain"].map((view) => (
-            <li key={view}>
-              <button
-                onClick={() => {
-                  setActiveView(view);
-                  setIsMenuOpen(false);
-                }}
-                className="text-gray-300 hover:text-white transition-colors duration-300"
-              >
-                {view === "arLens"
-                  ? "AR Lens"
-                  : view.charAt(0).toUpperCase() + view.slice(1)}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      )}
 
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full transition-all duration-500">
         {renderView()}
@@ -376,26 +374,50 @@ function LandingPage({ onEnter }) {
   );
 }
 
-// Energy Wallet View
+// Energy Wallet View with mock data fallback
 function WalletView({ data }) {
-  const [solarShare, setSolarShare] = useState(data.current.sourceMix.solar);
+  // Mock data fallback if backend is not available
+  const mockData = {
+    current: {
+      kwh: 450,
+      sourceMix: { coal: 60, solar: 25, wind: 15 },
+      greenCoins: 125,
+      energyScore: 72,
+    },
+    history: [
+      { month: "Jan", kwh: 420 },
+      { month: "Feb", kwh: 380 },
+      { month: "Mar", kwh: 450 },
+      { month: "Apr", kwh: 390 },
+      { month: "May", kwh: 470 },
+      { month: "Jun", kwh: 450 },
+    ],
+  };
+
+  const walletData = data || mockData;
+
+  const [solarShare, setSolarShare] = useState(
+    walletData.current.sourceMix.solar
+  );
   const [isAnimatingGreenCoins, setIsAnimatingGreenCoins] = useState(false);
   const [displayedGreenCoins, setDisplayedGreenCoins] = useState(
-    data.current.greenCoins
+    walletData.current.greenCoins
   );
   const [displayedEnergyScore, setDisplayedEnergyScore] = useState(
-    data.current.energyScore
+    walletData.current.energyScore
   );
 
   // Recalculate based on slider value
   const newCoalShare = Math.max(
     0,
-    data.current.sourceMix.coal - (solarShare - data.current.sourceMix.solar)
+    walletData.current.sourceMix.coal -
+      (solarShare - walletData.current.sourceMix.solar)
   );
   const newWindShare =
-    data.current.sourceMix.wind + (data.current.sourceMix.coal - newCoalShare);
+    walletData.current.sourceMix.wind +
+    (walletData.current.sourceMix.coal - newCoalShare);
 
-  const totalKwh = data.current.kwh;
+  const totalKwh = walletData.current.kwh;
   const coalKwh = totalKwh * (newCoalShare / 100);
   const solarKwh = totalKwh * (solarShare / 100);
   const windKwh = totalKwh * (newWindShare / 100);
@@ -414,16 +436,14 @@ function WalletView({ data }) {
     currency: "INR",
   });
   const newGreenCoins =
-    data.current.greenCoins +
-    Math.floor((solarShare - data.current.sourceMix.solar) * 2);
+    walletData.current.greenCoins +
+    Math.floor((solarShare - walletData.current.sourceMix.solar) * 2);
 
   const sourceMix = {
     coal: newCoalShare,
     solar: solarShare,
     wind: newWindShare,
   };
-
-  const { current, history } = data;
 
   // Number rolling animation for GreenCoins
   useEffect(() => {
@@ -452,7 +472,7 @@ function WalletView({ data }) {
     };
 
     requestAnimationFrame(animateRoll);
-  }, [isAnimatingGreenCoins, newGreenCoins]);
+  }, [isAnimatingGreenCoins, newGreenCoins, displayedGreenCoins]);
 
   const handleSliderChange = (e) => {
     const newSolarShare = parseInt(e.target.value);
@@ -460,8 +480,8 @@ function WalletView({ data }) {
     setSolarShare(newSolarShare);
 
     const newCoins =
-      data.current.greenCoins +
-      Math.floor((newSolarShare - data.current.sourceMix.solar) * 2);
+      walletData.current.greenCoins +
+      Math.floor((newSolarShare - walletData.current.sourceMix.solar) * 2);
     setDisplayedGreenCoins(newCoins);
     setIsAnimatingGreenCoins(true);
 
@@ -596,7 +616,7 @@ function WalletView({ data }) {
           </h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart
-              data={history}
+              data={walletData.history}
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
@@ -619,13 +639,22 @@ function WalletView({ data }) {
   );
 }
 
-// AI Copilot View
+// AI Copilot View with mock data fallback
 function CopilotView({ data, setCopilotData }) {
+  const mockData = {
+    title: "Shift Your Dishwasher Usage",
+    tip: "Run your dishwasher during off-peak hours (11 PM - 6 AM) when electricity rates are lower",
+    savings: 85,
+    co2Reduction: 12,
+  };
+
+  const copilotData = data || mockData;
+
   const [isShifted, setIsShifted] = useState(false);
   const initialTime = "8:00 PM";
   const shiftedTime = "2:30 AM";
-  const savings = isShifted ? data.savings : 0;
-  const co2Reduction = isShifted ? data.co2Reduction : 0;
+  const savings = isShifted ? copilotData.savings : 0;
+  const co2Reduction = isShifted ? copilotData.co2Reduction : 0;
 
   const handleShift = () => {
     setIsShifted(!isShifted);
@@ -672,8 +701,8 @@ function CopilotView({ data, setCopilotData }) {
               </svg>
             </div>
             <div>
-              <p className="text-lg font-bold">{data.title}</p>
-              <p className="text-gray-400 mt-1">{data.tip}</p>
+              <p className="text-lg font-bold">{copilotData.title}</p>
+              <p className="text-gray-400 mt-1">{copilotData.tip}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-6 text-center">
@@ -746,9 +775,40 @@ function CopilotView({ data, setCopilotData }) {
   );
 }
 
-// AR Lens View
+// AR Lens View with mock data fallback
 function ArLensView({ data }) {
-  if (!data || !data.appliances) return null;
+  const mockData = {
+    appliances: [
+      {
+        name: "Air Conditioner",
+        photoUrl:
+          "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400",
+        costPerDay: "₹45",
+        kwhPerDay: "4.5 kWh",
+        co2PerDay: "2.1 kg",
+      },
+      {
+        name: "Refrigerator",
+        photoUrl:
+          "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400",
+        costPerDay: "₹15",
+        kwhPerDay: "1.5 kWh",
+        co2PerDay: "0.7 kg",
+      },
+      {
+        name: "Washing Machine",
+        photoUrl:
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+        costPerDay: "₹8",
+        kwhPerDay: "0.8 kWh",
+        co2PerDay: "0.4 kg",
+      },
+    ],
+  };
+
+  const arData = data || mockData;
+
+  if (!arData || !arData.appliances) return null;
   const [activeAppliance, setActiveAppliance] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
 
@@ -761,7 +821,7 @@ function ArLensView({ data }) {
     }, 1500);
   };
 
-  const appliance = activeAppliance || data.appliances[0];
+  const appliance = activeAppliance || arData.appliances[0];
 
   return (
     <div className="container mx-auto p-4 animate-fadeIn">
@@ -774,7 +834,7 @@ function ArLensView({ data }) {
             Select an appliance to see its invisible energy footprint.
           </p>
           <div className="flex space-x-4 mb-8">
-            {data.appliances.map((appliance) => (
+            {arData.appliances.map((appliance) => (
               <button
                 key={appliance.name}
                 onClick={() => handleScan(appliance)}
@@ -808,7 +868,7 @@ function ArLensView({ data }) {
                     <p>
                       Cost/Day:{" "}
                       <span className="font-semibold text-green-400">
-                        ₹{appliance.costPerDay}
+                        {appliance.costPerDay}
                       </span>
                     </p>
                     <p>
@@ -834,11 +894,29 @@ function ArLensView({ data }) {
   );
 }
 
-// Blockchain View
+// Blockchain View with mock data fallback
 function BlockchainView({ data }) {
-  if (!data) return null;
+  const mockData = {
+    leaderboard: [
+      { rank: 1, society: "Green Valley Apartments", savings: "₹2,450" },
+      { rank: 2, society: "Solar Heights", savings: "₹2,200" },
+      { rank: 3, society: "Eco Gardens", savings: "₹1,980" },
+      { rank: 4, society: "Wind Manor", savings: "₹1,750" },
+      { rank: 5, society: "Your Society", savings: "₹1,650" },
+    ],
+    recentTrades: [
+      { seller: "House 42", buyer: "EV Station", kwhTraded: "3.2" },
+      { seller: "House 17", buyer: "Local School", kwhTraded: "2.8" },
+      { seller: "House 93", buyer: "Neighborhood Center", kwhTraded: "4.1" },
+      { seller: "House 28", buyer: "EV Station", kwhTraded: "1.9" },
+    ],
+  };
 
-  const [recentTrades, setRecentTrades] = useState(data.recentTrades);
+  const blockchainData = data || mockData;
+
+  if (!blockchainData) return null;
+
+  const [recentTrades, setRecentTrades] = useState(blockchainData.recentTrades);
   const [isLeaderboardAnimating, setIsLeaderboardAnimating] = useState(false);
   const [isProcessingTrade, setIsProcessingTrade] = useState(false);
   const [showRecentTradesFirst, setShowRecentTradesFirst] = useState(false);
@@ -851,7 +929,7 @@ function BlockchainView({ data }) {
         buyer: ["EV Station", "Neighborhood Center", "Local School"][
           Math.floor(Math.random() * 3)
         ],
-        kwhTraded: (Math.random() * 5).toFixed(2),
+        kwhTraded: (Math.random() * 5).toFixed(1),
       };
       setRecentTrades((prevTrades) => [newTrade, ...prevTrades.slice(0, 4)]);
     }, 3000);
@@ -883,7 +961,7 @@ function BlockchainView({ data }) {
       const newTrade = {
         seller: "Simulated House",
         buyer: "EV Station",
-        kwhTraded: 2,
+        kwhTraded: "2.0",
       };
 
       setRecentTrades((prevTrades) => [newTrade, ...prevTrades]);
@@ -927,11 +1005,11 @@ function BlockchainView({ data }) {
         Community Leaderboard
       </h3>
       <ul className="space-y-2">
-        {data.leaderboard?.map((item, index) => (
+        {blockchainData.leaderboard?.map((item, index) => (
           <li
             key={index}
             className={`flex justify-between items-center bg-gray-900 p-3 rounded-lg shadow-sm transition-transform duration-300 ${
-              isLeaderboardAnimating ? "animate-pulse-on-trade" : ""
+              isLeaderboardAnimating ? "animate-pulse" : ""
             }`}
           >
             <span className="font-bold text-lg text-gray-400">
