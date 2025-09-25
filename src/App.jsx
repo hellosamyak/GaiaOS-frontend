@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Transition } from "react-transition-group";
 import * as THREE from "three";
 import {
   LineChart,
@@ -15,9 +14,7 @@ import {
 // All components are defined within this single file for a self-contained hackathon demo.
 
 // --- API Configuration ---
-// Use the environment variable if available, otherwise default to a fallback.
-const BASE_URL =
-  process.env.REACT_APP_API_URL || "https://gaiaos-backend.onrender.com";
+const BASE_URL = "https://gaiaos-backend.onrender.com";
 
 // --- Main App Component ---
 export default function App() {
@@ -178,43 +175,37 @@ export default function App() {
       </header>
 
       {/* Hamburger Menu Overlay */}
-      <Transition in={isMenuOpen} timeout={300}>
-        {(state) => (
-          <div
-            className={`fixed inset-0 z-50 bg-gray-900 bg-opacity-95 backdrop-blur-sm transform ${
-              state === "entering" || state === "entered"
-                ? "translate-x-0"
-                : "-translate-x-full"
-            } transition-transform duration-300 ease-in-out md:hidden`}
+      <div
+        className={`fixed inset-0 z-50 bg-gray-900 bg-opacity-95 backdrop-blur-sm transform transition-transform duration-300 ease-in-out md:hidden ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-end p-4">
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="text-white text-4xl"
           >
-            <div className="flex justify-end p-4">
+            &times;
+          </button>
+        </div>
+        <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
+          {["wallet", "copilot", "arLens", "blockchain"].map((view) => (
+            <li key={view}>
               <button
-                onClick={() => setIsMenuOpen(false)}
-                className="text-white text-4xl"
+                onClick={() => {
+                  setActiveView(view);
+                  setIsMenuOpen(false);
+                }}
+                className="text-gray-300 hover:text-white transition-colors duration-300"
               >
-                &times;
+                {view === "arLens"
+                  ? "AR Lens"
+                  : view.charAt(0).toUpperCase() + view.slice(1)}
               </button>
-            </div>
-            <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
-              {["wallet", "copilot", "arLens", "blockchain"].map((view) => (
-                <li key={view}>
-                  <button
-                    onClick={() => {
-                      setActiveView(view);
-                      setIsMenuOpen(false);
-                    }}
-                    className="text-gray-300 hover:text-white transition-colors duration-300"
-                  >
-                    {view === "arLens"
-                      ? "AR Lens"
-                      : view.charAt(0).toUpperCase() + view.slice(1)}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </Transition>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <main className="flex-grow p-6 max-w-7xl mx-auto w-full transition-all duration-500">
         {renderView()}
