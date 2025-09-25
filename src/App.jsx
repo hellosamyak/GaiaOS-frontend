@@ -15,7 +15,9 @@ import {
 // All components are defined within this single file for a self-contained hackathon demo.
 
 // --- API Configuration ---
-const BASE_URL = "https://gaiaos-backend.onrender.com";
+// Use the environment variable if available, otherwise default to a fallback.
+const BASE_URL =
+  process.env.REACT_APP_API_URL || "https://gaiaos-backend.onrender.com";
 
 // --- Main App Component ---
 export default function App() {
