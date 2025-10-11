@@ -194,21 +194,23 @@ export default function App() {
             </button>
           </div>
           <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
-            {["wallet", "copilot", "arLens", "blockchain"].map((view) => (
-              <li key={view}>
-                <button
-                  onClick={() => {
-                    setActiveView(view);
-                    setIsMenuOpen(false);
-                  }}
-                  className="text-gray-300 hover:text-white transition-colors duration-300"
-                >
-                  {view === "arLens"
-                    ? "AR Lens"
-                    : view.charAt(0).toUpperCase() + view.slice(1)}
-                </button>
-              </li>
-            ))}
+            {["wallet", "copilot", "arLens", "blockchain", "briefing"].map(
+              (view) => (
+                <li key={view}>
+                  <button
+                    onClick={() => {
+                      setActiveView(view);
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-gray-300 hover:text-white transition-colors duration-300"
+                  >
+                    {view === "arLens"
+                      ? "AR Lens"
+                      : view.charAt(0).toUpperCase() + view.slice(1)}
+                  </button>
+                </li>
+              )
+            )}
           </ul>
         </div>
       )}
