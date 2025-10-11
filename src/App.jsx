@@ -93,7 +93,7 @@ export default function App() {
         );
       case "arLens":
         return <ArLensView data={arLensData} />;
-      case "blockchain":
+      case "trade":
         return (
           <BlockchainView
             data={blockchainData}
@@ -158,7 +158,7 @@ export default function App() {
             </button>
           </div>
           <ul className="hidden md:flex space-x-6 text-lg tracking-wide font-semibold">
-            {["wallet", "copilot", "arLens", "blockchain", "briefing"].map(
+            {["wallet", "copilot", "arLens", "trade", "briefing"].map(
               (view) => (
                 <li key={view}>
                   <button
@@ -194,7 +194,7 @@ export default function App() {
             </button>
           </div>
           <ul className="flex flex-col items-center justify-center h-full text-3xl space-y-8">
-            {["wallet", "copilot", "arLens", "blockchain", "briefing"].map(
+            {["wallet", "copilot", "arLens", "trade", "briefing"].map(
               (view) => (
                 <li key={view}>
                   <button

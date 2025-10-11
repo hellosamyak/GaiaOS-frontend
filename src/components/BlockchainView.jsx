@@ -131,7 +131,7 @@ export default function BlockchainView({ data }) {
     <div className="container mx-auto p-4 animate-fadeIn">
       <div className="bg-gray-900 p-6 rounded-3xl shadow-lg border border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <h2 className="text-3xl font-bold mb-6 text-pink-400">
-          Blockchain Grid
+          Trade (Blockchain) Grid
         </h2>
         <div className="bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-700 mb-8 transition-all duration-300 hover:shadow-lg hover:scale-[1.01]">
           <h3 className="text-xl font-semibold text-center mb-4">
