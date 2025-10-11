@@ -1,6 +1,6 @@
 # GaiaOS ⚡ The Energy Internet
 
-![GaiaOS Landing Page](https://i.imgur.com/GzXgY8L.png) **GaiaOS** is a web-based platform designed to tackle India's "Energy Blindspot" by transforming electricity into a visible, tradable, and intelligent ecosystem. We're building the **"UPI for Energy"**—making energy management as seamless and rewarding as digital payments.
+**GaiaOS** is a web-based platform designed to tackle India's "Energy Blindspot" by transforming electricity into a visible, tradable, and intelligent ecosystem. We're building the **"UPI for Energy"**—making energy management as seamless and rewarding as digital payments.
 
 **Live Demo:** [**https://gaia-os-frontend.vercel.app**](https://gaia-os-frontend.vercel.app) ---
 
